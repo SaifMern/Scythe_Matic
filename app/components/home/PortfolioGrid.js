@@ -26,7 +26,6 @@ const secondRow = [
 
 function TechCard({ tech }) {
   const Icon = tech.icon || Code2;
-
   return (
     <div className="flex shrink-0 items-center gap-3 rounded-2xl bg-white/[0.06] px-6 py-3.5 text-sm font-medium text-slate-200 backdrop-blur-xl sm:px-8 sm:py-4 sm:text-base">
       <Icon className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
@@ -53,13 +52,14 @@ function MarqueeRow({ items, reverse = false }) {
 
 export default function PortfolioGrid() {
   return (
-    <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
+    <section className="relative overflow-hidden py-10 sm:py-14 lg:py-16">
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
+
       <div className="relative z-10">
+        {/* Section Header */}
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="mx-auto mb-12 max-w-3xl text-center">
-            <span className="mb-4 inline-block rounded-full glass px-4 py-2 text-xs font-medium sm:text-sm">Technologies</span>
-            <h2 className="section-title mb-4">
+          <div className="mx-auto mb-8 max-w-3xl text-center sm:mb-10 lg:mb-12">
+            <h2 className="section-title mb-3">
               Technologies <span className="text-gradient">We Use</span>
             </h2>
             <p className="section-copy mx-auto max-w-2xl">
@@ -67,11 +67,11 @@ export default function PortfolioGrid() {
             </p>
           </div>
         </div>
-        <div className="w-screen overflow-hidden">
-          <div className="space-y-5">
-            <MarqueeRow items={firstRow} />
-            <MarqueeRow items={secondRow} reverse />
-          </div>
+
+        {/* Marquee Rows */}
+        <div className="space-y-5">
+          <MarqueeRow items={firstRow} />
+          <MarqueeRow items={secondRow} reverse />
         </div>
       </div>
     </section>

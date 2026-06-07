@@ -144,9 +144,7 @@ export default function ServicesPage() {
             animate="visible"
             className="mx-auto mb-14 max-w-4xl text-center sm:mb-16 lg:mb-20"
           >
-            <motion.span variants={heroItem} className="section-eyebrow">
-              Services
-            </motion.span>
+            
 
             <motion.h1 variants={heroItem} className="page-title mb-5 text-white">
               Our <span className="text-gradient">Services</span>

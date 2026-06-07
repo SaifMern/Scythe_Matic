@@ -139,13 +139,15 @@ img, svg { max-width: 100%; }
   }
 }
 
+/* ─── Marquee ───────────────────────────────────────────────────────────── */
+
 @keyframes marquee-normal {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(calc(-33.333% - 6px), 0, 0); }
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-33.333%, 0, 0); }
 }
 
 @keyframes marquee-reverse {
-  0% { transform: translate3d(calc(-33.333% - 6px), 0, 0); }
+  0%   { transform: translate3d(-33.333%, 0, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
@@ -154,6 +156,7 @@ img, svg { max-width: 100%; }
   width: 100%;
   overflow: hidden;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .marquee-inner,
@@ -162,24 +165,37 @@ img, svg { max-width: 100%; }
   width: max-content;
   will-change: transform;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
 }
 
-.marquee-inner { gap: 18px; }
-.marquee-group { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
-.marquee-normal { animation: marquee-normal 42s linear infinite; }
-.marquee-reverse { animation: marquee-reverse 42s linear infinite; }
+.marquee-inner  { gap: 18px; }
+.marquee-group  { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+
+.marquee-normal  { animation: marquee-normal  36s linear infinite; }
+.marquee-reverse { animation: marquee-reverse 40s linear infinite; }
+
+/* ─── Testimonial Marquee ───────────────────────────────────────────────── */
 
 .testimonial-marquee-track { gap: 24px; }
-.testimonial-marquee-left { animation: marquee-normal 52s linear infinite; }
+.testimonial-marquee-left  { animation: marquee-normal  52s linear infinite; }
 .testimonial-marquee-right { animation: marquee-reverse 52s linear infinite; }
 
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+
 @media (max-width: 640px) {
-  .marquee-inner, .marquee-group { gap: 14px; }
-  .marquee-normal, .marquee-reverse { animation-duration: 30s; }
-  .testimonial-marquee-track { gap: 16px; }
-  .testimonial-marquee-left, .testimonial-marquee-right { animation-duration: 38s; }
+  .marquee-inner,
+  .marquee-group { gap: 12px; }
+
+  .marquee-normal  { animation-duration: 26s; }
+  .marquee-reverse { animation-duration: 30s; }
+
+  .testimonial-marquee-track { gap: 14px; }
+  .testimonial-marquee-left,
+  .testimonial-marquee-right { animation-duration: 38s; }
 }
+
+/* ─── Reduced Motion ────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

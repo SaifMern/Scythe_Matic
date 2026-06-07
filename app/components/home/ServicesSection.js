@@ -1,4 +1,4 @@
-// SERVER COMPONENT - Fast initial load
+// SERVER COMPONENT — Fast initial load
 import ServiceCard from './ServiceCard';
 
 const services = [
@@ -39,14 +39,14 @@ const services = [
     color: 'from-primary to-accent',
   },
   {
-  iconName: 'CloudCog',
-  id: 'devops',
-  title: 'DevOps',
-  description:
-    'Reliable deployment, server setup, CI/CD pipelines, and cloud infrastructure management for scalable applications.',
-  features: ['CI/CD Pipelines', 'Cloud Deployment', 'Server Management'],
-  color: 'from-primary to-accent',
-},
+    iconName: 'CloudCog',
+    id: 'devops',
+    title: 'DevOps',
+    description:
+      'Reliable deployment, server setup, CI/CD pipelines, and cloud infrastructure management for scalable applications.',
+    features: ['CI/CD Pipelines', 'Cloud Deployment', 'Server Management'],
+    color: 'from-primary to-accent',
+  },
   {
     iconName: 'TrendingUp',
     id: 'product-growth-strategy',
@@ -60,31 +60,26 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+    <section className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
       <div className="absolute left-1/2 top-0 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="container relative z-10 mx-auto">
         {/* Section Header */}
-        <div className="mx-auto mb-12 max-w-3xl text-center sm:mb-14 lg:mb-16">
-          <span className="mb-4 inline-block rounded-full glass px-4 py-2 text-xs font-medium sm:text-sm">
-            Our Services
-          </span>
-
-          <h2 className="section-title mb-4">
+        <div className="mx-auto mb-8 max-w-3xl text-center sm:mb-10 lg:mb-12">
+          <h2 className="section-title mb-3">
             What We <span className="text-gradient">Offer</span>
           </h2>
-
           <p className="section-copy mx-auto max-w-2xl">
             Premium software services built to help businesses launch, scale, automate, and grow with confidence.
           </p>
         </div>
 
-        {/* Professional Responsive Grid */}
+        {/* Responsive Grid */}
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6">
           {services.map((service, index) => (
-            <ServiceCard key={service.title} service={service} index={index} />
+            <ServiceCard key={service.id} service={service} index={index} />
           ))}
         </div>
       </div>

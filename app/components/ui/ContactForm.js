@@ -1,184 +1,164 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 export default function ContactForm() {
-  const [form, setForm] = useState({
-    from_name: '',
-    from_email: '',
-    phone: '',
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
     subject: '',
     message: '',
   });
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
 
-  const [status, setStatus] = useState('idle');
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  function handleChange(e) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (status === 'loading') return;
-
-    const { from_name, from_email, message } = form;
-    if (!from_name.trim() || !from_email.trim() || !message.trim()) return;
-
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      );
 
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        setStatus('error');
-        return;
-      }
-
+      console.log('Email sent successfully:', result.text);
       setStatus('success');
-      setForm({ from_name: '', from_email: '', phone: '', subject: '', message: '' });
-    } catch (err) {
-      console.error('Submit error:', err);
-      setStatus('error');
-    }
-  }
+      
+      // Clear form
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      // Reset status after 5 seconds
+      setTimeout(() => setStatus('idle'), 5000);
 
-  if (status === 'success') {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/15 text-primary">
-          <CheckCircle2 className="h-8 w-8" />
-        </div>
-        <h3 className="card-title text-white">Message Sent!</h3>
-        <p className="section-copy max-w-sm text-slate-300">
-          Thank you for reaching out. We will get back to you shortly. Check your inbox for a confirmation email.
-        </p>
-        <button
-          type="button"
-          onClick={() => setStatus('idle')}
-          className="mt-2 rounded-full border border-white/20 px-6 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-primary/50 hover:text-primary"
-        >
-          Send Another Message
-        </button>
-      </div>
-    );
-  }
+    } catch (error) {
+      console.error('Email send failed:', error);
+      setStatus('error');
+      
+      // Reset status after 5 seconds
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="from_name" className="text-xs font-semibold uppercase tracking-widest text-white/50">
-            Full Name <span className="text-primary">*</span>
-          </label>
-          <input
-            id="from_name"
-            name="from_name"
-            type="text"
-            required
-            placeholder="John Smith"
-            value={form.from_name}
-            onChange={handleChange}
-            className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition-colors focus:border-primary/50 focus:bg-white/[0.08]"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="from_email" className="text-xs font-semibold uppercase tracking-widest text-white/50">
-            Email <span className="text-primary">*</span>
-          </label>
-          <input
-            id="from_email"
-            name="from_email"
-            type="email"
-            required
-            placeholder="john@example.com"
-            value={form.from_email}
-            onChange={handleChange}
-            className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition-colors focus:border-primary/50 focus:bg-white/[0.08]"
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium mb-2">
+          Name *
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          placeholder="Your full name"
+        />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-widest text-white/50">
-            Phone
-          </label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="+92 300 0000000"
-            value={form.phone}
-            onChange={handleChange}
-            className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition-colors focus:border-primary/50 focus:bg-white/[0.08]"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="subject" className="text-xs font-semibold uppercase tracking-widest text-white/50">
-            Subject
-          </label>
-          <input
-            id="subject"
-            name="subject"
-            type="text"
-            placeholder="Project Inquiry"
-            value={form.subject}
-            onChange={handleChange}
-            className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition-colors focus:border-primary/50 focus:bg-white/[0.08]"
-          />
-        </div>
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium mb-2">
+          Email *
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          placeholder="your.email@example.com"
+        />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="message" className="text-xs font-semibold uppercase tracking-widest text-white/50">
-          Message <span className="text-primary">*</span>
+      <div>
+        <label htmlFor="subject" className="block text-sm font-medium mb-2">
+          Subject *
+        </label>
+        <input
+          type="text"
+          id="subject"
+          name="subject"
+          value={formData.subject}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          placeholder="How can we help?"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium mb-2">
+          Message *
         </label>
         <textarea
           id="message"
           name="message"
-          required
-          rows={5}
-          placeholder="Tell us about your project..."
-          value={form.message}
+          value={formData.message}
           onChange={handleChange}
-          className="resize-none rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition-colors focus:border-primary/50 focus:bg-white/[0.08]"
+          required
+          rows={6}
+          className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+          placeholder="Tell us about your project..."
         />
       </div>
-
-      {status === 'error' && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>Something went wrong. Please try again or email us directly.</span>
-        </div>
-      )}
 
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="group flex w-full items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dark hover:shadow-xl hover:shadow-primary/35 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+        className="w-full px-6 py-4 bg-primary hover:bg-primary-dark rounded-full transition-all hover:scale-105 hover:shadow-xl hover:shadow-primary/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
       >
         {status === 'loading' ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             Sending...
           </>
+        ) : status === 'success' ? (
+          '✓ Message Sent Successfully!'
+        ) : status === 'error' ? (
+          '✗ Failed to Send'
         ) : (
           <>
             Send Message
-            <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <Send size={20} />
           </>
         )}
       </button>
+
+      {status === 'success' && (
+        <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+          <p className="text-center text-green-400 font-medium">
+            ✓ Thank you! Your message has been sent successfully. We'll get back to you soon!
+          </p>
+        </div>
+      )}
+
+      {status === 'error' && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+          <p className="text-center text-red-400 font-medium">
+            ✗ Oops! Something went wrong. Please try again or email us directly at hello@scythematic.com
+          </p>
+        </div>
+      )}
     </form>
   );
 }

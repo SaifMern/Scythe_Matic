@@ -3,9 +3,9 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import SplashScreen from './components/layout/SplashScreen';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scythematic.com';
+var siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scythematic.com';
 
-export const metadata = {
+export var metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
@@ -81,13 +81,13 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const jsonLd = {
+  var jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Scythematic',
     url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
-    image: `${siteUrl}/og-image.jpg`,
+    logo: siteUrl + '/logo.png',
+    image: siteUrl + '/og-image.jpg',
     description:
       'Scythematic is an enterprise software company building scalable web platforms, custom software, AI automation systems, DevOps pipelines, and quality-driven digital products.',
   };

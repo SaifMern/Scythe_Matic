@@ -1,5 +1,12 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+var nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, '../../'),
   images: {
     remotePatterns: [
       {
